@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Форма заявки</title>
+</head>
+<body>
+
+  <h1>Оставьте заявку</h1>
+
+  <form id="application-form" method="POST" action="/submit" enctype="multipart/form-data">
+    <label for="name">Ваше имя:</label><br>
+    <input type="text" id="name" name="name" required><br><br>
+
+    <label for="email">Ваш email:</label><br>
+    <input type="email" id="email" name="email" required><br><br>
+
+    <label for="message">Сообщение:</label><br>
+    <textarea id="message" name="message" required></textarea><br><br>
+
+    <label for="attachments">Прикрепить файлы:</label><br>
+    <input type="file" id="attachments" name="attachments" multiple><br><br>
+
+    <button type="submit">Отправить</button>
+  </form>
+
+  <script>
+    document.getElementById('application-form').addEventListener('submit', function(event) {
+      event.preventDefault(); // Предотвращаем стандартную отправку формы
+
+      // Создаем объект FormData для отправки данных и файлов
+      const formData = new FormData();
+      formData.append('name', document.getElementById('name').value);
+      formData.append('email', document.getElementById('email').value);
+      formData.append('message', document.getElementById('message').value);
+
+      // Добавляем все выбранные файлы в formData
+      const files = document.getElementById('attachments').files;
+      for (let i = 0; i < files.length; i++) {
+        formData.append('attachments', files[i]);
+      }
+
+      // Отправляем данные на бэк-энд
+      fetch('/submit', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => {
+        if (response.ok) {
+          // Форма успешно отправлена
+          alert('Заявка успешно отправлена!');
+        } else {
+          // Произошла ошибка
+          alert('Ошибка при отправке заявки!');
+        }
+      })
+      .catch(error => {
+        // Произошла ошибка
+        alert('Ошибка при отправке заявки!');
+      });
+    });
+  </script>
+
+</body>
+</html>
